@@ -1,24 +1,42 @@
 import { Model } from 'objection'
+import knex from '../../db/connection'
+import updatedDate from '../helpers/updatedDate'
+
+Model.knex(knex)
 
 class User extends Model {
 
-    indonesianID!: number
+    indonesianID!: string
     name!: string
     birthday!: Date
+    updatedAt!: string
+    deletedAt!: string
+
+    $beforeUpdate = () => {
+        this.updatedAt = updatedDate()
+    }
+
+    // $beforeDelete = () => {
+    //     this.deletedAt = updatedDate()
+    // }
 
     static tableName = 'users'
 
+    static get idColumn () {
+        return 'indonesianID'
+    }
+
     static jsonSchema = {
-        type: 'objecy',
+        type: 'object',
         required: ['indonesianID', 'name', 'birthday'],
 
         properties: {
-            indonesianID: { type: 'integer' },
-            name: { type: 'string' },
-            birthday: { type: 'datetime' },
-            createdAt: { type: 'timestamp' },
-            updatedAt: { type: ['timestamp', 'null'] },
-            deletedAt: { type: ['timestamp', 'null'] }
+            indonesianID: { type: 'string', minLength: 17, maxLength: 17 },
+            name: { type: 'string', pattern: '^[^0-9]+$' },
+            birthday: { type: 'date-time' },
+            createdAt: { type: 'string' },
+            updatedAt: { type: ['string', 'null'] },
+            deletedAt: { type: ['string', 'null'] }
         }
     }
 

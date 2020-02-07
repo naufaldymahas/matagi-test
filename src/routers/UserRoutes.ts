@@ -12,13 +12,22 @@ class UserRoutes {
 
     public routes = (): void => {
         // index
-        this.router.get('/v1/users', UserController.index)
+        this.router.get('/v1/users', UserController.findAll)
 
         // show
-        this.router.get('/v1/users/:id', UserController.show)
+        this.router.get('/v1/users/:indonesianID', UserController.findById)
 
         // post
         this.router.post('/v1/users', UserController.create)
+
+        // put
+        this.router.put('/v1/users/:indonesianID', UserController.createOrUpdate)
+
+        // patch
+        this.router.patch('/v1/users/:indonesianID', UserController.update)
+
+        // delete
+        this.router.delete('/v1/users/:indonesianID', UserController.delete)
 
     }
 
