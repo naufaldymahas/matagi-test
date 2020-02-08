@@ -13,12 +13,8 @@ class User extends Model {
     deletedAt!: string
 
     $beforeUpdate = () => {
-        this.updatedAt = updatedDate()
+        this.updatedAt = updatedDate.now()
     }
-
-    // $beforeDelete = () => {
-    //     this.deletedAt = updatedDate()
-    // }
 
     static tableName = 'users'
 

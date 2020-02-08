@@ -3,7 +3,6 @@ import express, { Application } from 'express'
 // Routers
 import UserRoutes from './routers/UserRoutes'
 
-const PORT = 8080
 
 class App {
     public app: Application
@@ -24,6 +23,8 @@ class App {
 
 }
 
-const app = new App().app
+export const app = new App().app
 
-app.listen(PORT, () => console.log('Listening to port ' + PORT))
+// app.listen(PORT, () => console.log('Listening to port ' + PORT))
+
+export default App

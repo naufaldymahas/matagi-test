@@ -66,6 +66,8 @@
   "exclude": [
     "node_modules",
     "db",
-    "build"
+    "build",
+    "**/*.test.ts",
+    "jest.config.js"
   ]
 }
