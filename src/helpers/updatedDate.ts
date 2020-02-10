@@ -1,4 +1,11 @@
+/**
+ * Class udpatedDate
+ */
 class updatedDate {
+
+    /**
+     * @function now
+     */
     public static now = (): string => {
         const date: string = new Date().toISOString().replace(/T|Z/g, ' ')
         const nowDate: string = date.replace(/[0-9][0-9]:/, new Date().getHours() + ':')

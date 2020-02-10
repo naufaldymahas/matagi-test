@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import UserController from '../controllers/UserController'
+import Validators from '../middleware/validators'
 
 class UserRoutes {
 
@@ -18,10 +19,10 @@ class UserRoutes {
         this.router.get('/v1/users/:indonesianID', UserController.findById)
 
         // post
-        this.router.post('/v1/users', UserController.create)
+        this.router.post('/v1/users', Validators.usersValidators, UserController.create)
 
         // put
-        this.router.put('/v1/users/:indonesianID', UserController.createOrUpdate)
+        this.router.put('/v1/users/:indonesianID', Validators.usersValidators, UserController.createOrUpdate)
 
         // patch
         this.router.patch('/v1/users/:indonesianID', UserController.update)

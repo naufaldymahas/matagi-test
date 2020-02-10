@@ -1,0 +1,293 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Swagger matagi test",
+        "description": "A minimal and easy to follow example of what you need to create CRUD style API in node JS"
+    },
+    "host": "localhost:8080",
+    "basePath": "",
+    "tags": [
+        {
+            "name": "Users",
+            "description": "API for Users"
+        }
+    ],
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "paths": {
+        "/api/v1/users": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "description": "query to make pagination",
+                        "type": "integer"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "description":"query to make pagination",
+                        "type": "integer"
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": false,
+                        "description":"query to search like name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "indonesianID",
+                        "in": "query",
+                        "required": false,
+                        "description":"query to search like indonesianID",
+                        "type": "integer"
+                    }
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/Users"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "description": "Create a new user",
+                        "schema": {
+                            "$ref": "#/definitions/CreateUser"
+                        }
+                    }
+                ],
+                "summary": "Create new user",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/CreateUser"
+                        }
+                    },
+                    "400": {
+                        "description":"Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/v1/users/{indonesianID}": {
+            "parameters": [
+                {
+                    "name": "indonesianID",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of user",
+                    "schema": {
+                        "$ref": "#/definitions/indonesianID"
+                    }
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "find one user by indonesianID",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "put",
+                        "in": "body",
+                        "required": true,
+                        "description": "Create or update a new user",
+                        "schema": {
+                            "$ref": "#/definitions/UpdateUser"
+                        }
+                    }
+                ],
+                "summary": "Create or update a User",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "patch",
+                        "in": "body",
+                        "required": true,
+                        "description": "Update a new user",
+                        "schema": {
+                            "$ref": "#/definitions/UpdateUser"
+                        }
+                    }
+                ],
+                "summary": "Update a User",
+                "responses": {
+                    "200": {
+                        "description": "Data has been updated!"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete a User",
+                "responses": {
+                    "200": {
+                        "description": "Data has been deleted!"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                }
+            }
+        }
+    },
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "definitions": {
+        "indonesianID": {
+            "type": "string"
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "indonesianID": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "birthday": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "deletedAt": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "Users": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "total": {
+                            "type": "integer"
+                        },
+                        "users": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                }
+            }
+        },
+        "CreateUser": {
+            "type": "object",
+            "properties": {
+                "indonesianID": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "birthday": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "1970-01-01"
+                }
+            }
+        },
+        "UpdateUser": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "required": false
+                },
+                "birthday": {
+                    "type": "string",
+                    "format": "date-time",
+                    "required": false,
+                    "example": "1970-01-01"
+                }
+            }
+        }
+    }
+}
