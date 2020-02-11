@@ -13,6 +13,7 @@ class Validators {
      * @param {String} req.body.name name
      * @param {Datetime} req.body.birthday birthday
      * @param {Response} res
+     * @param {Object} res.locals.user
      * @param {String} res.locals.user.indonesianID indonesianID that has passed validation
      * @param {String} res.locals.user.name name that has passed validation
      * @param {String} res.locals.user.birthday birthday that has passed validation
@@ -21,9 +22,11 @@ class Validators {
      */
     usersValidators = (req: Request, res: Response, next: NextFunction): any => {
         try {
+            console.log(req.method)
             const indonesianID: string = req.body.indonesianID || req.params.indonesianID
             const { name, birthday } = req.body
             const user = User.fromJson({ indonesianID, name, birthday })
+            console.log(user)
             res.locals.user = user
             return next()
         } catch (error) {

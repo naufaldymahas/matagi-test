@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
-import User from '../models/User'
 import { ValidationError } from 'objection'
+import User from '../models/User'
 
 /**
  * User Controller
@@ -29,7 +29,7 @@ class UserController {
 
     /**
      * Type User
-     * @typedef {UserData} UserData
+     * @typedef {User} User
      * 
      * @property {Object} user
      * @property {String} user.indonesianID indonesianID
@@ -102,15 +102,16 @@ class UserController {
      * Find User by indonesianID
      * @async
      * @param {Request} req
+     * @param {Object} req.params
      * @param {String} req.params.indonesianID indonesianId
      * @param {Response} res
      * @param {Function} res.json will return json with res.json
-     * @returns {UserData} return of response that contain single User
+     * @returns {User} return of response that contain single User
      */
     findById = async (req: Request, res: Response): Promise<Response> => {
         try {
             const { indonesianID } = req.params
-            if (indonesianID.length !== 17) throw 'Bad Request'
+            if (indonesianID.length !== 17) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'indonesianID length must 17 character!' })
             const user = await User.query().findById(indonesianID).throwIfNotFound()
             return res.json({
                 data: user
@@ -132,7 +133,7 @@ class UserController {
      * @param {String} res.locals.user.indonesianID indonesianID
      * @param {String} res.locals.user.name name
      * @param {String} res.locals.user.birthday birthday
-     * @returns {UserData} created data 
+     * @returns {User} created data 
      */
     create = async (req: Request, res: Response): Promise<Response> => {
         try {
@@ -158,7 +159,7 @@ class UserController {
      * @param {String} res.locals.user.indonesianID indonesianID
      * @param {String} res.locals.user.name name
      * @param {String} res.locals.user.birthday birthday
-     * @returns {UserData | Message} create or update data 
+     * @returns {User | Message} create or update data 
      */
     createOrUpdate = async (req: Request, res: Response): Promise<Response> => {
         const { indonesianID, name, birthday } = res.locals.user
@@ -213,7 +214,7 @@ class UserController {
             })
             if (name) patch.name = name
             if (birthday) patch.birthday = birthday
-            await User.query().patch(patch).findById(indonesianID)
+            await User.query().patch(patch).findById(indonesianID).throwIfNotFound()
             return res.json({
                 message: 'Data has been updated!'
             })

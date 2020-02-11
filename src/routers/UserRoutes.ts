@@ -25,7 +25,7 @@ class UserRoutes {
         this.router.put('/v1/users/:indonesianID', Validators.usersValidators, UserController.createOrUpdate)
 
         // patch
-        this.router.patch('/v1/users/:indonesianID', UserController.update)
+        this.router.patch('/v1/users/:indonesianID', Validators.usersValidators, UserController.update)
 
         // delete
         this.router.delete('/v1/users/:indonesianID', UserController.delete)

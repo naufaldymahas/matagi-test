@@ -7,7 +7,7 @@ Model.knex(knex)
 /**
  * UserModel
  */
-class User extends Model {
+class UserModel extends Model {
 
     indonesianID!: string
     name!: string
@@ -58,4 +58,4 @@ class User extends Model {
 
 }
 
-export default User
+export default UserModel
