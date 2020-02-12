@@ -1,7 +1,12 @@
 import { app } from './index'
 import request from 'supertest'
 
-// const app = new App().app
+/**
+ * Testing Unit
+ * For testing POST, PUT, PATCH, and DELETE
+ * Please edit indonesianID in parameter or in send method
+ * And you can edit name or birthday too
+ */
 
 // Testing get all users
 describe('GET /users', () => {
