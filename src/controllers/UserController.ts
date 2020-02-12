@@ -1,6 +1,6 @@
 import { Response, Request } from 'express'
 import { ValidationError } from 'objection'
-import User from '../models/User'
+import UserModel from '../models/UserModel'
 
 /**
  * User Controller
@@ -73,7 +73,7 @@ class UserController {
             else sql = sql.slice(0, -5)
 
             // query
-            const users = await User.query()
+            const users = await UserModel.query()
             .whereRaw(sql)
             .whereNull('deletedAt').page(page - 1, limit ? limit : 10)
 
@@ -114,7 +114,7 @@ class UserController {
         try {
             if (indonesianID.length !== 17) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'indonesianID length must 17 character!' })
             if (!indonesianID.match(/^[0-9]+$/)) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'should number only' })
-            const user = await User.query().findById(indonesianID).throwIfNotFound()
+            const user = await UserModel.query().findById(indonesianID).throwIfNotFound()
             return res.json({
                 data: user
             })
@@ -139,7 +139,7 @@ class UserController {
      */
     create = async (req: Request, res: Response): Promise<Response> => {
         try {
-            await User.query().insert(res.locals.user)
+            await UserModel.query().insert(res.locals.user)
             return res.status(201).json({
                 message: 'Data has been created!',
                 user: res.locals.user
@@ -168,11 +168,11 @@ class UserController {
         try {
 
             // check is user already exist
-            const user = await User.query().findById(indonesianID)
+            const user = await UserModel.query().findById(indonesianID)
 
             if (!user) {
                 // create new user because user not exist
-                await User.query().insert(res.locals.user)
+                await UserModel.query().insert(res.locals.user)
                 return res.status(201).json({
                     message: 'Data has been created!',
                     user: res.locals.user
@@ -180,7 +180,7 @@ class UserController {
             }
 
             // updating user because user is exist
-            await User.query().patch({ name, birthday }).findById(indonesianID)
+            await UserModel.query().patch({ name, birthday }).findById(indonesianID)
             return res.json({
                 message: 'Data has been updated!'
             })
@@ -208,15 +208,15 @@ class UserController {
         let patch: any = {}
 
         try {
-            const user = await User.query().findById(indonesianID).throwIfNotFound()
-            User.fromJson({ 
+            const user = await UserModel.query().findById(indonesianID).throwIfNotFound()
+            UserModel.fromJson({ 
                 indonesianID,
                 name: name ? name : user.name,
                 birthday: birthday ? birthday : user.birthday
             })
             if (name) patch.name = name
             if (birthday) patch.birthday = birthday
-            await User.query().patch(patch).findById(indonesianID).throwIfNotFound()
+            await UserModel.query().patch(patch).findById(indonesianID).throwIfNotFound()
             return res.json({
                 message: 'Data has been updated!'
             })
@@ -241,7 +241,7 @@ class UserController {
         try {
             if (indonesianID.length !== 17) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'indonesianID length must 17 character!' })
             if (isNaN(parseInt(indonesianID))) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'should number only' })
-            await User.query()
+            await UserModel.query()
                 .patch({})
                 .findById(indonesianID)
                 .throwIfNotFound()

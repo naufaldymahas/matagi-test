@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import User from '../models/User'
+import UserModel from '../models/UserModel'
 
 /**
  * Middleware Validators
@@ -24,7 +24,7 @@ class Validators {
         try {
             const indonesianID: string = req.body.indonesianID || req.params.indonesianID
             const { name, birthday } = req.body
-            const user = User.fromJson({ indonesianID, name, birthday })
+            const user = UserModel.fromJson({ indonesianID, name, birthday })
             res.locals.user = user
             return next()
         } catch (error) {
@@ -36,7 +36,7 @@ class Validators {
             }
             if (name) {
                 for (let i = 0; i < name.length; i++) {
-                    if (name[i].keyword === 'pattern') name[i].message = 'should string only'
+                    if (name[i].keyword === 'pattern') name[i].message = 'no number or symbol'
                 }
             }
             return res.status(400).json({

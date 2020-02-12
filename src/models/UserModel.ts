@@ -47,7 +47,7 @@ class UserModel extends Model {
         required: ['indonesianID', 'name', 'birthday'],
 
         properties: {
-            indonesianID: { type: 'string', minLength: 17, maxLength: 17, pattern: '^[0-9]*$' },
+            indonesianID: { type: 'string', minLength: 17, maxLength: 17, pattern: '^[a-zA-Z ]+$' },
             name: { type: 'string', pattern: '^[^0-9]+$' },
             birthday: { type: 'string', format: 'date' },
             createdAt: { type: 'string' },
