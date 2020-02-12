@@ -23,6 +23,7 @@ $ npm install or yarn
 ```
 
 After that please edit your database connection in **knexfile.ts**
+
 Then execute this command on your terminal to migrating database
 
 ```
