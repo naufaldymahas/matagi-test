@@ -110,7 +110,6 @@ class UserController {
      */
     findById = async (req: Request, res: Response): Promise<Response> => {
         const { indonesianID } = req.params
-        console.log(indonesianID.match(/^[0-9]+$/))
         try {
             if (indonesianID.length !== 17) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'indonesianID length must 17 character!' })
             if (!indonesianID.match(/^[0-9]+$/)) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'should number only' })
