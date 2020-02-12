@@ -109,9 +109,11 @@ class UserController {
      * @returns {User} return of response that contain single User
      */
     findById = async (req: Request, res: Response): Promise<Response> => {
+        const { indonesianID } = req.params
+        console.log(indonesianID.match(/^[0-9]+$/))
         try {
-            const { indonesianID } = req.params
             if (indonesianID.length !== 17) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'indonesianID length must 17 character!' })
+            if (!indonesianID.match(/^[0-9]+$/)) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'should number only' })
             const user = await User.query().findById(indonesianID).throwIfNotFound()
             return res.json({
                 data: user
@@ -235,8 +237,10 @@ class UserController {
      * @returns {Message} delete data 
      */
     delete = async (req: Request, res: Response): Promise<Response> => {
-        const indonesianID = req.params.indonesianID
+        const { indonesianID } = req.params
         try {
+            if (indonesianID.length !== 17) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'indonesianID length must 17 character!' })
+            if (isNaN(parseInt(indonesianID))) throw new ValidationError({ statusCode: 400, type: 'ModelValidation', data: 'should number only' })
             await User.query()
                 .patch({})
                 .findById(indonesianID)

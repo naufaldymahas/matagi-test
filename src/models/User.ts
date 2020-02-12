@@ -21,7 +21,7 @@ class UserModel extends Model {
      * @param {String} [queryContext.delete] if true it will delete user by adding deletedAt
      * @return {Function} return updatedDate.now() function
      */
-    $beforeUpdate = (opt: ModelOptions, queryContext: QueryContext) => {
+    $beforeUpdate = (opt: ModelOptions, queryContext: QueryContext): any => {
         this.updatedAt = updatedDate.now()
         if (queryContext.delete) this.deletedAt = updatedDate.now()
     }
@@ -49,7 +49,7 @@ class UserModel extends Model {
         properties: {
             indonesianID: { type: 'string', minLength: 17, maxLength: 17, pattern: '^[0-9]*$' },
             name: { type: 'string', pattern: '^[^0-9]+$' },
-            birthday: { type: 'date-time' },
+            birthday: { type: 'string', format: 'date' },
             createdAt: { type: 'string' },
             updatedAt: { type: ['string', 'null'] },
             deletedAt: { type: ['string', 'null'] }

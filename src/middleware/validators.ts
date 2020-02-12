@@ -22,14 +22,23 @@ class Validators {
      */
     usersValidators = (req: Request, res: Response, next: NextFunction): any => {
         try {
-            console.log(req.method)
             const indonesianID: string = req.body.indonesianID || req.params.indonesianID
             const { name, birthday } = req.body
             const user = User.fromJson({ indonesianID, name, birthday })
-            console.log(user)
             res.locals.user = user
             return next()
         } catch (error) {
+            const { indonesianID, name } = error.data
+            if (indonesianID) {
+                for (let i = 0; i < indonesianID.length; i++) {
+                    if (indonesianID[i].keyword === 'pattern') indonesianID[i].message = 'should number only'
+                }
+            }
+            if (name) {
+                for (let i = 0; i < name.length; i++) {
+                    if (name[i].keyword === 'pattern') name[i].message = 'should string only'
+                }
+            }
             return res.status(400).json({
                 error
             })

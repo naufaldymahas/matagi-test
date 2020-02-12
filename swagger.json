@@ -101,7 +101,7 @@
                     "name": "indonesianID",
                     "in": "path",
                     "required": true,
-                    "description": "ID of user",
+                    "description": "Must input number with 17 character only",
                     "schema": {
                         "$ref": "#/definitions/indonesianID"
                     }
@@ -167,7 +167,7 @@
                         "name": "patch",
                         "in": "body",
                         "required": true,
-                        "description": "Update a new user",
+                        "description": "Update a new user, can update name or birthday only",
                         "schema": {
                             "$ref": "#/definitions/UpdateUser"
                         }

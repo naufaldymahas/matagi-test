@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: controllers/UserController.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: controllers/UserController.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+var __awaiter = (this &amp;&amp; this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this &amp;&amp; this.__importDefault) || function (mod) {
+    return (mod &amp;&amp; mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const User_1 = __importDefault(require("../models/User"));
+/**
+ * User Controller
+ */
+class UserController {
+    constructor() {
+        /**
+         * Type Users
+         * @typedef {Users} Users
+         *
+         * @property {Object} data object data must returns fetch user results
+         * @property {Object} data.results results contain name, indonesianID, page, limit
+         * @property {Number} data.results.total total data of all users
+         * @property {Number} [data.results.nextPage] nextPage if available
+         * @property {Number} [data.results.prevPage] prevPage if available
+         * @property {Number} [data.results.page] query to make pagination
+         * @property {Number} [data.results.limit] query to make pagination
+         * @property {Object[]} data.results.users data of all users
+         * @property {String} data.results.users.name name
+         * @property {String} data.results.users.indonesianID indonesianID
+         * @property {Datetime} data.results.users.birthday birthday
+         * @property {Timestamp} data.results.users.createdAt createdAt
+         * @property {Timestamp} data.results.users.updatedAt updatedAt
+         * @property {Timestamp} data.results.users.deletedAt deletedAt
+         */
+        /**
+         * Type User
+         * @typedef {User} User
+         *
+         * @property {Object} user
+         * @property {String} user.indonesianID indonesianID
+         * @property {String} user.name name
+         * @property {Datetime} user.birthday birthday
+         * @property {Timestamp} [user.createdAt] Will be seen in method findById
+         * @property {Timestamp} [user.updatedAt] Will be seen in method findById
+         * @property {Timestamp} [user.deletedAt] Will be seen in method findById
+         */
+        /**
+         * Type Message
+         * @typedef {Message} Message
+         *
+         * @property {string} message will give information
+         */
+        /**
+         * Find All User
+         * @async
+         * @param {Request} req
+         * @param {String} [req.query.name] name
+         * @param {String} [req.query.indonesianID] indonesianId
+         * @param {Number} [req.query.page] page
+         * @param {Number} [req.query.limit] limit
+         * @param {Response} res
+         * @param {Function} res.json will return json with res.json
+         * @returns {Users} return of response that contain Users
+         */
+        this.findAll = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { name, indonesianID } = req.query;
+                const page = parseInt(req.query.page);
+                const limit = parseInt(req.query.limit);
+                let sql = '';
+                let results = {};
+                // req.query checker
+                if (name)
+                    sql += `name like '%${name}%' and `;
+                if (indonesianID)
+                    sql += `indonesianID like '%${indonesianID}%'`;
+                else
+                    sql = sql.slice(0, -5);
+                // query
+                const users = yield User_1.default.query()
+                    .whereRaw(sql)
+                    .whereNull('deletedAt').page(page - 1, limit ? limit : 10);
+                // pagination checker
+                if (page)
+                    results.page = page;
+                if (limit)
+                    results.limit = limit;
+                if (limit === users.results.length)
+                    results.nextPage = page + 1;
+                if (page > 1)
+                    results.prevPage = page - 1;
+                return res.json({
+                    data: Object.assign(Object.assign({}, results), { total: users.total, users: users.results })
+                });
+            }
+            catch (error) {
+                res.app.locals = error;
+                return res.status(400).json({
+                    error
+                });
+            }
+        });
+        /**
+         * Find User by indonesianID
+         * @async
+         * @param {Request} req
+         * @param {Object} req.params
+         * @param {String} req.params.indonesianID indonesianId
+         * @param {Response} res
+         * @param {Function} res.json will return json with res.json
+         * @returns {User} return of response that contain single User
+         */
+        this.findById = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { indonesianID } = req.params;
+                if (indonesianID.length !== 17)
+                    throw 'Bad Request';
+                const user = yield User_1.default.query().findById(indonesianID).throwIfNotFound();
+                return res.json({
+                    data: user
+                });
+            }
+            catch (error) {
+                return res.status(error.statusCode === 404 ? 404 : 400).json({
+                    error
+                });
+            }
+        });
+        /**
+         * Create New User
+         * @async
+         * @param {Request} req request has been used in middleware
+         * @param {Response} res
+         * @param {Function} res.json will return json with res.json
+         * @param {Object} res.locals.user this object contain request which has been validated
+         * @param {String} res.locals.user.indonesianID indonesianID
+         * @param {String} res.locals.user.name name
+         * @param {String} res.locals.user.birthday birthday
+         * @returns {User} created data
+         */
+        this.create = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield User_1.default.query().insert(res.locals.user);
+                return res.status(201).json({
+                    message: 'Data has been created!',
+                    user: res.locals.user
+                });
+            }
+            catch (error) {
+                return res.status(400).json({
+                    error
+                });
+            }
+        });
+        /**
+         * Create New or Update User
+         * @async
+         * @param {Request} req request has been used in middleware
+         * @param {Response} res
+         * @param {Function} res.json will return json with res.json
+         * @param {Object} res.locals.user this object contain request which has been validated
+         * @param {String} res.locals.user.indonesianID indonesianID
+         * @param {String} res.locals.user.name name
+         * @param {String} res.locals.user.birthday birthday
+         * @returns {User | Message} create or update data
+         */
+        this.createOrUpdate = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { indonesianID, name, birthday } = res.locals.user;
+            try {
+                // check is user already exist
+                const user = yield User_1.default.query().findById(indonesianID);
+                if (!user) {
+                    // create new user because user not exist
+                    yield User_1.default.query().insert(res.locals.user);
+                    return res.status(201).json({
+                        message: 'Data has been created!',
+                        user: res.locals.user
+                    });
+                }
+                // updating user because user is exist
+                yield User_1.default.query().patch({ name, birthday }).findById(indonesianID);
+                return res.json({
+                    message: 'Data has been updated!'
+                });
+            }
+            catch (error) {
+                return res.status(400).json({
+                    error: 'Bad Request'
+                });
+            }
+        });
+        /**
+         * Update User
+         * @async
+         * @param {Request} req
+         * @param {String} req.params.indonesianID indonesianID
+         * @param {String} [req.body.name] name
+         * @param {String} [req.body.birthday] birthday
+         * @param {Response} res
+         * @param {Function} res.json method to return data with json type
+         * @returns {Message} update data
+         */
+        this.update = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const indonesianID = req.params.indonesianID;
+            const { name, birthday } = req.body;
+            let patch = {};
+            try {
+                const user = yield User_1.default.query().findById(indonesianID).throwIfNotFound();
+                User_1.default.fromJson({
+                    indonesianID,
+                    name: name ? name : user.name,
+                    birthday: birthday ? birthday : user.birthday
+                });
+                if (name)
+                    patch.name = name;
+                if (birthday)
+                    patch.birthday = birthday;
+                yield User_1.default.query().patch(patch).findById(indonesianID);
+                return res.json({
+                    message: 'Data has been updated!'
+                });
+            }
+            catch (error) {
+                return res.status(error.statusCode === 400 ? 400 : 404).json({
+                    error
+                });
+            }
+        });
+        /**
+         * Delete User by update deletedAt
+         * @async
+         * @param {Request} req
+         * @param {String} req.params.indonesianID indonesianID
+         * @param {Response} res
+         * @param {Function} res.json method to return data with json type
+         * @returns {Message} delete data
+         */
+        this.delete = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const indonesianID = req.params.indonesianID;
+            try {
+                yield User_1.default.query()
+                    .patch({})
+                    .findById(indonesianID)
+                    .throwIfNotFound()
+                    .context({ delete: true });
+                return res.json({
+                    message: 'Data has been deleted!'
+                });
+            }
+            catch (error) {
+                return res.status(404).json({
+                    error
+                });
+            }
+        });
+    }
+}
+exports.default = new UserController();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="updatedDate.html">updatedDate</a></li><li><a href="UserController.html">UserController</a></li><li><a href="UserModel.html">UserModel</a></li><li><a href="Validators.html">Validators</a></li></ul><h3>Global</h3><ul><li><a href="global.html#now">now</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Tue Feb 11 2020 13:43:53 GMT+0700 (Western Indonesia Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
