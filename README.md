@@ -17,7 +17,15 @@ Please run this command on your terminal
 ```
 $ git clone https://github.com/naufaldymahas/matagi-test.git
 $ cd matagi-test
-$ npm install or yarn
+```
+
+To install this project you can execute
+```
+$ npm install
+```
+*or*
+```
+$ yarn
 ```
 
 After that please edit your database connection in **knexfile.ts**
@@ -25,13 +33,21 @@ After that please edit your database connection in **knexfile.ts**
 Then execute this command on your terminal to migrating database
 
 ```
-$ npm run migrate or yarn migrate
+$ npm run migrate
+```
+*or*
+```
+$ yarn migrate
 ```
 
 Finally, start and build the application
 
 ```
-$ npm run start or yarn start
+$ npm run start
+```
+*or*
+```
+$ yarn start
 ```
 
 ### Testing
@@ -41,7 +57,11 @@ Please read comments at **index.test.ts**
 To run testing, execute this command on your terminal
 
 ```
-npm run test or yarn test
+npm run test
+```
+*or*
+```
+yarn test
 ```
 
 ## Usage
